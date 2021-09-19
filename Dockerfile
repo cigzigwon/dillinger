@@ -52,22 +52,28 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-i
   wget \
   && rm -rf /var/lib/apt/lists/*
 
+# should fix dir context issue w/builds (ALWAYS DO THIS!!!)
+WORKDIR /build
+
 # this is faster via npm run build-docker
-COPY package.json ./package.json
-RUN npm install --devDependencies \
+COPY . /build
+RUN npm install \
   && npm cache verify
 # Copy source over and create configs dir
 
-RUN rm -rf /configs
-RUN mkdir -p /configs
-COPY . .
+# (THESE WOULD BE HAX!!!)
+#RUN rm -rf /configs
+#RUN mkdir -p /configs
+#COPY . .
 
 RUN echo 'kernel.unprivileged_userns_clone=1' > /etc/sysctl.d/userns.conf
 RUN adduser --disabled-password --gecos '' dillinger
-RUN chown -R dillinger:dillinger /public
+RUN chown -R dillinger:dillinger /build/public
 USER dillinger
 
 EXPOSE 8080
+
+# (TYPICALLY BELONGS AT TOP OF FILE!!!)
 ENV NODE_ENV=production
 
 CMD ["npm", "start"]

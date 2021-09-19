@@ -1,6 +1,6 @@
 var fs = require('fs')
 var path = require('path')
-var googleapis = require('googleapis')
+var { google } = require('googleapis')
 var request = require('request')
 
 var configFile = path.resolve(__dirname, '../../configs/googledrive/',
@@ -38,28 +38,28 @@ var GoogleDrive = {
   // could load drive object earlier?
   _loadDriveIfRequired: function (callback) {
     if (!drive) {
-      drive = googleapis.drive('v2')
+      drive = google.drive('v2')
       callback()
     } else {
       callback()
     }
   },
   generateAuthUrl: function () {
-    var OAuth2 = googleapis.auth.OAuth2
+    var OAuth2 = google.auth.OAuth2
 
     var oauth2Client = new OAuth2(
       config.client_id, config.client_secret, config.redirect_uri)
     return oauth2Client.generateAuthUrl({ scope: scopes.join(' ') })
   },
   getToken: function (code, callback) {
-    var OAuth2 = googleapis.auth.OAuth2
+    var OAuth2 = google.auth.OAuth2
     var oauth2Client = new OAuth2(
       config.client_id, config.client_secret, config.redirect_uri)
     oauth2Client.getToken(code, callback)
   },
   search: function (tokens, callback) {
     this._loadDriveIfRequired(function () {
-      var OAuth2 = googleapis.auth.OAuth2
+      var OAuth2 = google.auth.OAuth2
       var oauth2Client = new OAuth2(
         config.client_id, config.client_secret, config.redirect_uri)
       oauth2Client.credentials = tokens
@@ -72,7 +72,7 @@ var GoogleDrive = {
   get: function (tokens, fileId, callback) {
     var that = this
     this._loadDriveIfRequired(function () {
-      var OAuth2 = googleapis.auth.OAuth2
+      var OAuth2 = google.auth.OAuth2
       var oauth2Client = new OAuth2(
         config.client_id, config.client_secret, config.redirect_uri)
 
