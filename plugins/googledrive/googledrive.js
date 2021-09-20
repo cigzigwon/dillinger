@@ -79,8 +79,8 @@ var GoogleDrive = {
       oauth2Client.credentials = tokens
       drive.files.get({ fileId: fileId, auth: oauth2Client }, (err, result) => {
         if (err) return console.error(err)
-        that._getContents(tokens, result.downloadUrl, function (err, data) {
-          callback(err, { title: result.title, content: data })
+        that._getContents(tokens, result.data.downloadUrl, function (err, data) {
+          callback(err, { title: result.data.title, content: data })
         })
       })
     })

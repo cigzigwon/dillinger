@@ -47,7 +47,7 @@ var import_googledrive = function(req, res) {
   var tokens = req.session.googledrive;
   GoogleDrive.search(tokens, function(err, data) {
     handle_googledrive_response(req, res, err, function() {
-      res.json(data);
+      res.json(data.data);
     });
   });
 }
