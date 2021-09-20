@@ -2,6 +2,8 @@ FROM nodesource/nsolid:latest
 
 LABEL maintainer "Joe McCann <joe@subprint.com>"
 
+ENV NODE_ENV=development
+
 # Install our dependencies (libfontconfig for phantomjs)
 RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
   bzip2 \
@@ -57,6 +59,7 @@ WORKDIR /build
 
 # this is faster via npm run build-docker
 COPY . /build
+RUN npm install --global gulp-cli
 RUN npm install \
   && npm cache verify
 # Copy source over and create configs dir
@@ -72,8 +75,5 @@ RUN chown -R dillinger:dillinger /build/public
 USER dillinger
 
 EXPOSE 8080
-
-# (TYPICALLY BELONGS AT TOP OF FILE!!!)
-ENV NODE_ENV=production
 
 CMD ["npm", "start"]
